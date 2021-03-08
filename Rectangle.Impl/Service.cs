@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Rectangle.Impl
 {
-    public static class Service
+	public static class Service
 	{
 		/// <summary>
 		/// See TODO.txt file for task details.
@@ -17,19 +17,42 @@ namespace Rectangle.Impl
 			if (points != null && points.Count >= 2 && 
 				points.Distinct().Count() == points.Count())
 			{
-				points.Sort();
 				int minY = points.Select(x => x.Y).Min();
 				int maxY = points.Select(x => x.Y).Max();
-				Point pointMinY = points.Find(x => x.Y == minY);
-				Point pointMaxY = points.Find(x => x.Y == maxY);
-				if (points.Where(x => x.X == points.Last().X).Count() == 1)
-					return new Rectangle() { X = points.Last().X - 1, Y = minY, 
-						Height = pointMaxY.DistanceByY(pointMinY), 
-						Width = points.First().X - (points.Last().X - 1) };
-				else if (points.Where(x => x.X == points.First().X).Count() == 1)
-					return new Rectangle() { X = points.First().X + 1, Y = minY, 
-						Height = pointMaxY.DistanceByY(pointMinY), 
-						Width = points.Last().X - (points.First().X + 1) };
+				int minX = points.Select(x => x.X).Min();
+				int maxX = points.Select(x => x.X).Max();
+				if (points.Where(x => x.X == maxX).Count() == 1)
+					return new Rectangle() 
+					{ 
+						X = maxX - 1, 
+						Y = minY, 
+						Height = maxY - minY + 1, 
+						Width = minX - maxX 
+					};
+				else if (points.Where(x => x.X == minX).Count() == 1)
+					return new Rectangle() 
+					{ 
+						X = minX + 1, 
+						Y = minY, 
+						Height = maxY - minY + 1, 
+						Width = maxX - minX 
+					};
+				else if (points.Where(x => x.Y == minY).Count() == 1)
+					return new Rectangle()
+					{
+						X = minX,
+						Y = minY + 1,
+						Height = maxY - minY,
+						Width = maxX - minX + 1
+					};
+				else if (points.Where(x => x.Y == maxY).Count() == 1)
+					return new Rectangle()
+					{
+						X = minX,
+						Y = maxY - 1,
+						Height = minY - maxY,
+						Width = maxX - minX + 1
+					};
 				else throw new ArgumentException("The input list is invalid");
 			}
 			else throw new ArgumentException("The input list is invalid");
